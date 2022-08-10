@@ -1,8 +1,14 @@
 {
+  "scripts": {
+    "start":"node task-manager/index.js",
+    "dev":"nodemon task-manager/src/index.js"
+  },
   "dependencies": {
     "express": "^4.18.1",
     "hbs": "^4.0.1",
     "mongodb": "^4.8.1",
-    "request": "^2.88.2"
+    "mongoose": "^6.5.1",
+    "request": "^2.88.2",
+    "validator": "^13.7.0"
   }
 }
