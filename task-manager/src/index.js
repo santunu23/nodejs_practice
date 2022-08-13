@@ -2,160 +2,60 @@ const express=require('express');
 require('./db/mongoose')
 const app=express();
 const port=process.env. PORT || 3000
-const User=require('../modals/user')
-const Task=require('../modals/tasks')
+// app.use((req,res,next)=>{
+//     if(req.method==='GET'){
+//         res.send('GET requests are disabled')
+//     }else{
+//         next()
+//     }
+// })
 
+// app.use((req,res,next)=>{
+//     if(req.method==='GET'){
+//         res.status(503).send('We are doing our maintenance work,please come to later')
+//     }
+// })
+
+
+
+const userRouter=require('./routers/user')
+const taskRouter=require('./routers/task')
+const bcrypt=require('bcrypt')
+const jwt=require('jsonwebtoken')
 app.use(express.json())
-
-//Get users
-app.get('/users',async (req,res)=>{
-    try{
-         const users=await User.find({})
-         res.send(users)
-     }catch(e){
-         res.status(500).send()
-     }
- 
-     //Using the promise chaining
- 
-     // User.find({}).then((users)=>{
-     //     res.send(users)
-     // }).catch((e)=>{
-     //     res.status(500).send()
-     // })
- })
-
-//POST users
-app.post('/users', async (req,res)=>{
-    const user=new User(req.body)
-    try{
-        await user.save()
-        res.status(201).send(user)
-    }catch(e){
-        res.status(400).send(e)
-    }
-   
-    //Using the Promise chaining
-
-    // user.save().then(()=>{
-    //     res.send(user)
-    // }).catch((e)=>{
-    //     res.status(400).send(e)
-    // })
-  
-})
-//Get element by ID
-app.get('/users/:id', async (req,res)=>{
-    const _id=req.params.id;
-    try{
-        const user= await User.findById(_id)
-        if(!user){
-            return res.status(404).send()
-        }
-        res.send(user)
-    }catch{
-        res.status(500).send()
-    }
-    // Using the promise chaining
-    
-    // User.findById(_id).then((user)=>{
-    //     if(!user){
-    //         return res.status(404).send()
-    //     }
-    //     res.send(user)
-    // }).catch((e)=>{
-    //     res.status(500).send()
-    // })
-
-})
-
-app.patch('/users/:id',async(req,res)=>{
-    const updates=Object.keys(req.body);
-    const allowedUpdate=['name','email','age','password']
-    const isValidOperation = updates.every((update)=>{
-        return allowedUpdates.includes(update)
-    })
-    if(isValidOperation){
-        return res.status(400).send({error:'Invalid updates'})
-    }
-    try{
-        const user=await User.findByIdAndUpdate(req.params.id,  req.body, { new : true,runValidators:true })
-        if(!user){
-            return res.status(404).send()
-        }
-        res.send(user)
-    }catch(e){
-            res.status(400).send()
-    }
-})
-
-//Implementation Task modal
-app.post('/tasks', async (req,res)=>{
-    const task=new Task(req.body)
-    try{
-        await task.save()
-        res.status(201).send(task)
-    }catch(e){
-        res.status(400).send(e)
-    }
-  
-
-    //Using the promise chaining
-    // task.save().then(()=>{
-    //     res.send(task)
-    // }).catch((e)=>{
-    //     res.status(200).send(e)
-    // })
-})
-
-// Goal: Setup the task reading endpoint
-// 1. Create an endpoint for fetching all tasks.
-// 2. Create an endpoint for featcing a tasks by its id.
-// 3. Setup new requests in postman and test your work.
-
-app.get('/tasks',async (req,res)=>{
-    try{
-        const tasks=await  Task.find({})
-        res.send(tasks)
-    }catch(e){
-        res.status(400).send(e)
-    }
-    // Task.find({}).then((tasks)=>{
-    //     res.send(tasks)
-    // }).catch((e)=>{
-    //     res.status(500).send()
-    // })
-})
-
-app.get('/tasks/:id',async (req,res)=>{
-   const _id=req.params.id;
-   console.log(_id)
-   try{
-    const tasks= await Task.findById(_id)
-    if(!tasks){
-        return res.status(404).status(e)
-    }
-    res.send(tasks)
-   }catch(e){
-       res.status(400).send(e)
-   }
-    
-//    const tasks=new Tasks()
-//     // Task.findById(_id).then((task)=>{
-//     //     console.log(task)
-//     //     if(!task){
-//     //         return res.status(404).send()
-//     //     }
-//     //     res.send(task)
-//     // }).catch((e)=>{
-//     //     req.status().send()
-//     // })
-})
-
-
-app.patch('tasks/')
-
+app.use(userRouter);
+app.use(taskRouter);
 
 app.listen(port,()=>{
     console.log("Server is up on port "+port)
 })
+
+const Task=require('../modals/tasks')
+const User=require('../modals/user')
+// const main = async ()=>{
+// //Find owner by it's id
+// // const task= await Task.findById('62f5fdb6d82b2563a170620d')
+// // await task.populate('owner')
+// // console.log('My main task '+task)
+// // console.log("My owner task "+task.owner)
+//     const user= await User.findById('62f5fbc4c9679b7558e0b8b7')
+//     await user.populate('tasks')
+
+// }
+// main()
+
+
+// const myFunction=async()=>{
+//    const token= jwt.sign({ _id:'abc123' },'thisismynewcourse',{expiresIn: '3 Days'})
+//    const data=jwt.verify(token,'thisismynewcourse')
+// }
+
+// //Using of hashed password.
+// // const myFunction=async()=>{
+// //     const password='Red12345!'
+// //     const hashedPassword=await bcrypt.hash(password, 8)
+// //     const isMatch= await bcrypt.compare('Red12345!',hashedPassword)
+   
+// // }
+
+// myFunction()
