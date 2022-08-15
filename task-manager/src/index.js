@@ -44,6 +44,35 @@ const User=require('../modals/user')
 // }
 // main()
 
+//File uploading using multer npm package
+const multer=require('multer');
+const upload=multer({
+    dest: 'images',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req,file,cb){
+        //Multer npm package filter option to find the file extension.
+
+        // if(!file.originalname.endsWith('.pdf')){
+        //     return cb(new Error('Please upload a PDF.'))
+        // }
+
+        //Use regular expression for file extension.
+        if(!file.originalname.match(/\.(doc|docx)$/)){
+            return cb(new Error('Please upload a word document.'))
+        }
+        cb(undefined,true) 
+    }
+})
+const errorMiddleware=(req,res,next)=>{
+    throw new Error('Please upload a word file.')
+}
+app.post('/upload',errorMiddleware,(req,res)=>{
+   res.send()
+},(error,req,res,next)=>{
+    res.status(400).send({error:error.message})
+})
 
 // const myFunction=async()=>{
 //    const token= jwt.sign({ _id:'abc123' },'thisismynewcourse',{expiresIn: '3 Days'})
