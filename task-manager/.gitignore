@@ -1,0 +1,5 @@
+/node_modules
+/note-app/node_modules
+/config/dev.env
+/playground
+/chat-app/node_modules

@@ -1,6 +1,14 @@
 const express=require('express');
 require('./db/mongoose')
 const app=express();
+const userRouter=require('./routers/user')
+const taskRouter=require('./routers/task')
+const bcrypt=require('bcrypt')
+const jwt=require('jsonwebtoken')
+app.use(express.json())
+app.use(userRouter);
+app.use(taskRouter);
+
 const port=process.env. PORT || 3000
 // app.use((req,res,next)=>{
 //     if(req.method==='GET'){
@@ -18,13 +26,7 @@ const port=process.env. PORT || 3000
 
 
 
-const userRouter=require('./routers/user')
-const taskRouter=require('./routers/task')
-const bcrypt=require('bcrypt')
-const jwt=require('jsonwebtoken')
-app.use(express.json())
-app.use(userRouter);
-app.use(taskRouter);
+
 
 app.listen(port,()=>{
     console.log("Server is up on port "+port)
